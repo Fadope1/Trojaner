@@ -1,25 +1,15 @@
 import asyncio
+import sys
 
 import websockets
 
-HOST = "192.168.178.139"
-PORT = 4545
+# Why is async used here?
 
 
-def run_forever(func):
-    async def inner():
-        try:
-            return await func()
-        except Exception as e:
-            print(e) # logging
-    return inner
+async def hello():
+    async with websockets.connect("ws://localhost:4545") as websocket:
+        await websocket.send(str(sys.argv[1])) # replace by id
+        print(await websocket.recv())
 
 
-@run_forever
-async def handler():
-    async with websockets.connect(f'ws://{HOST}:{PORT}') as websocket:
-        cmd = await websocket.recv()
-        print(cmd)
-
-
-asyncio.run(handler())
+asyncio.run(hello())
