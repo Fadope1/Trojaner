@@ -10,3 +10,8 @@ CLIENT = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 # msg = CLIENT.recv(1024).decode(FORMAT)
 CLIENT.sendto(bytes("#Connect", FORMAT), ADDR)
+
+msg = None
+while msg != "#Close":
+    msg = str(CLIENT.recvfrom(8)[0], FORMAT)
+    print(msg)
