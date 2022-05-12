@@ -1,15 +1,12 @@
-import asyncio
-import sys
-
-import websockets
-
-# Why is async used here?
+import socket
 
 
-async def hello():
-    async with websockets.connect("ws://localhost:4545") as websocket:
-        await websocket.send(str(sys.argv[1])) # replace by id
-        print(await websocket.recv())
+SERVER_ADDR = socket.gethostbyname(socket.gethostname())
+SERVER_PORT = 4545
+ADDR = (SERVER_ADDR, SERVER_PORT)
 
+FORMAT = 'utf-8'
+CLIENT = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-asyncio.run(hello())
+# msg = CLIENT.recv(1024).decode(FORMAT)
+CLIENT.sendto(bytes("#Connect", FORMAT), ADDR)

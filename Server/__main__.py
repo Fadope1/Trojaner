@@ -1,36 +1,43 @@
+import socket
+import threading
 from multiprocessing import Process
-import asyncio
 
-import websockets
 
-"""
-1. Have a handler that connects a new connection to a list
-2. wait for user input
-3. send user input to ALL connections in list
-"""
+ADDR = socket.gethostbyname(socket.gethostname()) # local ip address
+PORT = 4545
+SOCKET = (ADDR, PORT)
+FORMAT = "utf-8"
 
-connections = {}
+server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # create a udp server over ip
+server.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+server.bind(SOCKET) # bind server to our addr + port
+
+clients = set()
+
+# TODO: Add threading for handling connection and broadcasting
+# multiprocessing and logging
+# handle end of connection
 
 
 def handle_new_connections():
-    async def handler(websocket):
-        async for message in websocket:
-            connections[message] = websocket
-            # await websocket.send(message)
-
-    async def main():
-        async with serve(echo, "localhost", 4545):
-            await asyncio.Future()  # run forever
-
-    asyncio.run(main())
+    print("nice2")
+    # while True:
+    #     msg, addr = server.recvfrom(8)
+    #     print(msg)
+    #     clients.add(addr)
 
 
-def reverse_shell():
-    while True:
-        print(connections)
+def broadcast():
+    print("nice")
+    # msg = input("> ")
+    # print(clients)
+    # for client in clients:
+    #     server.sendto(binary(msg, FORMAT))
 
 
-send_comands = Process(target=reverse_shell)
-get_new_connections = Process(target=handle_new_connections)
-get_new_connections.start()
-send_comands.start()
+p1 = Process(target = lambda x: print(x))
+p2 = Process(target = broadcast)
+p1.start()
+p2.start()
+p1.join()
+p2.join()
