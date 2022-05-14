@@ -1,17 +1,15 @@
 import socket
 
+client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
 
-SERVER_ADDR = socket.gethostbyname(socket.gethostname())
-SERVER_PORT = 4545
-ADDR = (SERVER_ADDR, SERVER_PORT)
+client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) # for testing only
 
-FORMAT = 'utf-8'
-CLIENT = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+client.bind(("", 5050))
 
-# msg = CLIENT.recv(1024).decode(FORMAT)
-CLIENT.sendto(bytes("#Connect", FORMAT), ADDR)
+client.sendto(b'#Connect', ("localhost", 4545))
 
-msg = None
-while msg != "#Close":
-    msg = str(CLIENT.recvfrom(8)[0], FORMAT)
-    print(msg)
+while True:
+    data = client.recv(1024)
+    print(str(data))
+    if data == b"#Close":
+        break

@@ -1,41 +1,29 @@
-from threading import Thread
 import socket
-import sys
+import time
 
 
-ADDR = socket.gethostbyname(socket.gethostname()) # local ip address
-PORT = 4545
-SOCKET = (ADDR, PORT)
 FORMAT = "utf-8"
-CLOSE_TAG = "#Close"
+PORT = 4545
 
-server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # create a udp server over ip
-server.bind(SOCKET) # bind server to our addr + port
+BROADCASTER = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # udp connection
+BROADCASTER.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) # same ports multiple servers
+BROADCASTER.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1) # activate broadcasting
 
-clients = set()
+SERVER = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+SERVER.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) # same ports multiple servers
+SERVER.bind(("", PORT))
 
 
-def handle_new_connections():
+def main():
     while True:
-        msg, addr = server.recvfrom(8)
-        print(msg)
-        clients.add(addr)
-
-
-def broadcast():
-    global clients
-    
-    while True:
-        msg = input("")
-        if msg == "#exit":
-            sys.exit()
-        print(clients)
-        for client in clients:
-            server.sendto(bytes(msg, FORMAT), client)
-        if msg == CLOSE_TAG:
-            clients = set()
+        data, addr = SERVER.recvfrom(8)
+        print(str(data))
+        msg = input("> ")
+        if msg == 'close_all':
+            BROADCASTER.sendto(msg, ('<broadcast>', PORT)) # broadcast on specified port
+            break
+        SERVER.sendto(bytes(msg, FORMAT), addr)
 
 
 if __name__ == '__main__':
-    Thread(target = handle_new_connections).start()
-    Thread(target = broadcast).start()
+    main()
