@@ -17,12 +17,16 @@ TCP_SERVER.bind(("", PORT))
 SERVERS: dict[str, socket.socket] = {"broadcast": BROADCAST_SERVER, "p2p": TCP_SERVER}
 
 
-def close_all_servers() -> None:
+def close_all_servers() -> bool:
     """close all servers"""
     for _, server in SERVERS.items():
         server.close()
 
+    return True # exception handling
 
-def close_server_by_name(server_name) -> None:
+
+def close_server_by_name(server_name) -> bool:
     """close one server by key"""
     SERVERS[server_name].close()
+
+    return True # exception handling

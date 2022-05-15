@@ -10,10 +10,19 @@ Cipher Codes (Startswith):
 from Server.exceptions import AccessDenied, CloseServer
 
 from typing import Callable
+import logging
+
+import coloredlogs
+
+logging.basicConfig(filename="logfilename.log", level=logging.INFO)
+logger = logging.getLogger(__name__)
+coloredlogs.install(level='WARNING')
+
+TIMEOUT_TIME = 1 # seconds
 
 FORMAT = "utf-8"
 PORT = 4545
-SECRET_PASSWORD = "123" # how to store securly?
+SECRET_PASSWORD = "123" # how to store securely?
 
 
 def validate_admin() -> bool:
@@ -28,6 +37,6 @@ def validate_admin() -> bool:
 
 
 ciphers: dict[str, Callable] = {
-    "@StopServer": validate_admin,
-    "@help": lambda: "Sry, not implemented yet"
+    "@stopserver": validate_admin,
+    "@help": lambda: print("hi")
 }
