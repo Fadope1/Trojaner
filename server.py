@@ -1,6 +1,4 @@
 from typing import Callable
-import asyncio
-import subprocess
 
 import socket
 
@@ -10,7 +8,7 @@ FORMAT = "utf-8"
 TCP_SERVER = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # tcp server
 TCP_SERVER.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) # same port for multiple servers
 TCP_SERVER.bind(("localhost", PORT)) # 127.0.0.1:4545
-TCP_SERVER.listen(1) # set to listen mode with max 1 connection
+TCP_SERVER.listen() # set to listen mode with max 1 connection
 
 SERVER_COMMANDS: dict[str, Callable] = {
     "@help": lambda: print(f">> List of commands: \n{' '.join(list(SERVER_COMMANDS))}")
@@ -26,13 +24,11 @@ def run_forever(func, **kwargs):
 
 @run_forever
 def client_connection(**kwargs):
-    client, addr = kwargs['client'], kwargs['addr']
-
-    # ip, port = addr
+    client, _ = kwargs['client'], kwargs['addr']
 
     cmd = input("> ")
-    if cmd in SERVER_COMMANDS:
-        SERVER_COMMANDS.get(cmd)()
+    if cmd.startswith('@'):
+        SERVER_COMMANDS.get(cmd, lambda: print(f"Could not find {cmd}"))()
         return
 
     client.send(cmd.encode(FORMAT))
@@ -45,10 +41,12 @@ def client_connection(**kwargs):
 def handle_new_connection():
     conn, addr = TCP_SERVER.accept()
 
-    with conn as client:
-        connect_msg = client.recv(8).decode(FORMAT)
-        if connect_msg == "#Connect":
-            client_connection(client=client, addr=addr)
+    connect_msg = conn.recv(8).decode(FORMAT)
+    if connect_msg == "#Connect":
+        try:
+            client_connection(client=conn, addr=addr)
+        except Exception:
+            pass
 
 
 if __name__ == '__main__':
