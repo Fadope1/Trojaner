@@ -1,13 +1,14 @@
 from typing import Callable
 
 import socket
+import sys
 
 PORT = 4545
 FORMAT = "utf-8"
 
 TCP_SERVER = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # tcp server
 TCP_SERVER.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) # same port for multiple servers
-TCP_SERVER.bind(("localhost", PORT)) # 127.0.0.1:4545
+TCP_SERVER.bind((sys.argv[1], PORT)) # 127.0.0.1:4545
 TCP_SERVER.listen() # set to listen mode with max 1 connection
 
 SERVER_COMMANDS: dict[str, Callable] = {
