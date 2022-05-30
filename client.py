@@ -21,6 +21,6 @@ while True:
     if run:
         print(run)
 
-        client.send(run)
+        client.send(run.encode(FORMAT))
         continue
     client.send("#Empty_run".encode(FORMAT))
