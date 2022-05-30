@@ -23,4 +23,4 @@ while True:
 
         client.send(run)
         continue
-    client.send("#Empty_run")
+    client.send("#Empty_run".encode(FORMAT))
