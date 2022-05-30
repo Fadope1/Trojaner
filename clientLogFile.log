@@ -1,0 +1,22 @@
+INFO:root:Starting pairing process
+DEBUG:root:Sending connect message.
+DEBUG:root:[Waiting] Waiting for reply.
+DEBUG:root:-- #Connect_confirm -- was send as reply from the server.
+INFO:root:Connection has been established
+DEBUG:root:[Waiting] Receiving server msg.
+DEBUG:root:New message from server: ls. Running as subprocess...
+DEBUG:root:Run results: b'__pycache__\nclient.py\nclientLogFile.log\nserver.py\nserverLogFile.log\nshared_logic.py\n'
+DEBUG:root:Sending return message to server
+DEBUG:root:[Waiting] Receiving server msg.
+DEBUG:root:New message from server: ls. Running as subprocess...
+DEBUG:root:Run results: b'__pycache__\nclient.py\nclientLogFile.log\nserver.py\nserverLogFile.log\nshared_logic.py\n'
+DEBUG:root:Sending return message to server
+DEBUG:root:[Waiting] Receiving server msg.
+DEBUG:root:New message from server: test. Running as subprocess...
+DEBUG:root:Run results: b''
+DEBUG:root:Sending return message to server
+DEBUG:root:[Waiting] Receiving server msg.
+DEBUG:root:New message from server: . Running as subprocess...
+DEBUG:root:Run results: b''
+DEBUG:root:Sending return message to server
+DEBUG:root:[Waiting] Receiving server msg.

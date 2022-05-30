@@ -1,53 +1,68 @@
-from typing import Callable
+from shared_logic import timeout
+from shared_logic import *
 
+from typing import Callable
 import socket
 import sys
+import select
+import logging
 
-PORT = 4545
-FORMAT = "utf-8"
+# better logging settings
+logging.basicConfig(filename='serverLogFile.log', filemode='w', encoding='utf-8', level=logging.DEBUG)
 
 TCP_SERVER = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # tcp server
 TCP_SERVER.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) # same port for multiple servers
-TCP_SERVER.bind((sys.argv[1], PORT)) # 127.0.0.1:4545
-TCP_SERVER.listen() # set to listen mode with max 1 connection
+TCP_SERVER.bind((IP, PORT)) # 127.0.0.1:4545
+TCP_SERVER.listen() # set to listen mode
+TCP_SERVER.setblocking(0)
 
 SERVER_COMMANDS: dict[str, Callable] = {
     "@help": lambda: print(f">> List of commands: \n{' '.join(list(SERVER_COMMANDS))}")
 }
+logging.info("Server has been initialized")
 
 
 def run_forever(func, **kwargs):
     def inner(**kwargs):
-        while True:
-            func(**kwargs)
+        while not func(**kwargs):
+            pass
     return inner
 
 
 @run_forever
-def client_connection(**kwargs):
-    client, _ = kwargs['client'], kwargs['addr']
+def client_connection(**kwargs) -> bool:
+    client, addr = kwargs['client'], kwargs['addr']
 
     cmd = input("> ")
     if cmd.startswith('@'):
         SERVER_COMMANDS.get(cmd, lambda: print(f"Could not find {cmd}"))()
-        return
+        return True
 
-    client.send(cmd.encode(FORMAT))
+    timeout(client, lambda _conn: _conn.send(cmd.encode(FORMAT)), None)
 
-    connect_msg = client.recv(1024).decode(FORMAT)
-    print(connect_msg)
+    connect_msg = timeout(client, lambda _client: _client.recv(1024).decode(FORMAT))
+    print("[CLIENT]", connect_msg)
+    return False
 
 
 @run_forever
-def handle_new_connection():
-    conn, addr = TCP_SERVER.accept()
+def handle_new_connection() -> None:
+    logging.debug("[Waiting] Handling new Connection started.")
+    conn, addr = timeout(TCP_SERVER, lambda _conn: _conn.accept(), None)
+    logging.info(f"New connection from {addr}")
 
-    connect_msg = conn.recv(8).decode(FORMAT)
-    if connect_msg == "#Connect":
+    connect_msg = timeout(conn, lambda _conn: _conn.recv(8).decode(FORMAT), 5)
+    logging.debug(f"Connection message received: {connect_msg}")
+    if connect_msg == CONNECT_MSG:
         try:
+            logging.debug("Sending confirm message.")
+            timeout(conn, lambda _conn: _conn.send(CONNECT_MSG_REPLY.encode(FORMAT)), None)
+            logging.debug(f"Starting communication with {addr}")
             client_connection(client=conn, addr=addr)
-        except Exception:
-            pass
+        except ConnectionTimeout as e:
+            logging.warning(f"{addr} is not responding. {e}")
+        except Exception as e:
+            logging.warning(e)
 
 
 if __name__ == '__main__':
