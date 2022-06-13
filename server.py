@@ -1,4 +1,4 @@
-from shared_logic import timeout
+from shared_logic import timeout, run_forever
 from shared_logic import *
 
 from typing import Callable
@@ -22,15 +22,10 @@ SERVER_COMMANDS: dict[str, Callable] = {
 logging.info("Server has been initialized")
 
 
-def run_forever(func, **kwargs):
-    def inner(**kwargs):
-        while not func(**kwargs):
-            pass
-    return inner
-
-
 @run_forever
 def client_connection(**kwargs) -> bool:
+    """This handles a client -> sending cmds to the client."""
+
     client, addr = kwargs['client'], kwargs['addr']
 
     cmd = input("> ")
@@ -47,6 +42,8 @@ def client_connection(**kwargs) -> bool:
 
 @run_forever
 def handle_new_connection() -> None:
+    """This handles new connections made to the server."""
+
     logging.debug("[Waiting] Handling new Connection started.")
     conn, addr = timeout(TCP_SERVER, lambda _conn: _conn.accept(), None)
     logging.info(f"New connection from {addr}")

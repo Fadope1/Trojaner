@@ -15,3 +15,13 @@ DEBUG:root:[Waiting] Receiving server msg.
 DEBUG:root:New message from server: . Running as subprocess...
 DEBUG:root:Run results: b''
 DEBUG:root:Sending return message to server
+INFO:root:Starting pairing process
+DEBUG:root:Sending connect message.
+INFO:root:Starting pairing process
+DEBUG:root:Sending connect message.
+INFO:root:Starting pairing process
+DEBUG:root:Sending connect message.
+INFO:root:Starting pairing process
+DEBUG:root:Sending connect message.
+INFO:root:Starting pairing process
+DEBUG:root:Sending connect message.

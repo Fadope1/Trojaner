@@ -24,6 +24,13 @@ class ConnectionTimeout(Exception):
     """Raised when connection has as timeout."""
 
 
+def run_forever(func, **kwargs):
+    def inner(**kwargs):
+        while not func(**kwargs):
+            pass
+    return inner
+
+
 def timeout(conn, func, timeout_time=TIMEOUT):
     """send msg.bytes with timeout."""
     if not timeout_time:
