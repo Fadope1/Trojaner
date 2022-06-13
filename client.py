@@ -8,16 +8,6 @@ import logging
 
 logging.basicConfig(filename='clientLogFile.log', filemode='w', encoding='utf-8', level=logging.DEBUG)
 
-FORMAT = "utf-8"
-
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # TCP
-
-client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) # for testing
-
-client.connect((IP, PORT)) # connect to server
-
-client.setblocking(0) # not blocking functions for timeouts
-
 
 @run_forever
 def pairing_process() -> None:
@@ -54,13 +44,24 @@ def server_connection() -> None:
 if __name__ == "__main__":
     while True:
         try:
+            client = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # TCP
+            client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) # for testing
+            client.connect((IP, PORT)) # connect to server
+            client.setblocking(0) # not blocking functions for timeouts
+
             logging.info("Starting pairing process")
             pairing_process()
             logging.info("Connection has been established")
             server_connection()
         except ConnectionTimeout:
             import time
-            print("Connection has timed out")
+            logging.error("Connection has timed out")
+            logging.debug("Reconnecting after 1 second.")
+            time.sleep(1)
+        except ConnectionRefusedError:
+            import time
+            logging.error("Connection was refused")
+            logging.debug("Reconnecting after 1 second.")
             time.sleep(1)
         except Exception as e:
-            logging.error("Error occured:", e)
+            logging.error("Undefined error occured:", e)
