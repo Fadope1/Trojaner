@@ -33,7 +33,7 @@ logging.info("Connection has been established")
 
 while True:
     logging.debug("[Waiting] Receiving server msg.")
-    reply = timeout(client, lambda _client: _client.recv(1024).decode(FORMAT))
+    reply = timeout(client, lambda _client: _client.recv(1024).decode(FORMAT), None)
 
     logging.debug(f"New message from server: {reply}. Running as subprocess...")
 
