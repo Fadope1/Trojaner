@@ -65,8 +65,6 @@ def main():
         time.sleep(1)
     except Exception as e:
         logging.error("Undefined error occured:", e)
-    # finally:
-    #     client.shutdown(0)
 
 
 if __name__ == "__main__":

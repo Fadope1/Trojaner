@@ -1,12 +1,12 @@
 INFO:root:Server has been initialized
 DEBUG:root:[Waiting] Handling new Connection started.
-INFO:root:New connection from ('127.0.0.1', 52887)
+INFO:root:New connection from ('127.0.0.1', 52907)
 DEBUG:root:Connection message received: #Connect
 DEBUG:root:Sending confirm message.
-DEBUG:root:Starting communication with ('127.0.0.1', 52887)
-WARNING:root:('127.0.0.1', 52887) is not responding. Connection has timed out
+DEBUG:root:Starting communication with ('127.0.0.1', 52907)
+WARNING:root:[Errno 54] Connection reset by peer
 DEBUG:root:[Waiting] Handling new Connection started.
-INFO:root:New connection from ('127.0.0.1', 52888)
+INFO:root:New connection from ('127.0.0.1', 52908)
 DEBUG:root:Connection message received: #Connect
 DEBUG:root:Sending confirm message.
-DEBUG:root:Starting communication with ('127.0.0.1', 52888)
+DEBUG:root:Starting communication with ('127.0.0.1', 52908)

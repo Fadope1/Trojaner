@@ -17,5 +17,3 @@ DEBUG:root:Run results: b''
 DEBUG:root:Sending return message to server
 ERROR:root:Connection has timed out
 DEBUG:root:Reconnecting after 1 second.
-ERROR:root:Connection was refused
-DEBUG:root:Reconnecting after 1 second.
