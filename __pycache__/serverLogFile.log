@@ -1,0 +1,11 @@
+INFO:root:Server has been initialized
+DEBUG:root:[Waiting] Handling new Connection started.
+INFO:root:New connection from ('127.0.0.1', 56868)
+DEBUG:root:Connection message received: #Connect
+DEBUG:root:Sending confirm message.
+DEBUG:root:Starting communication with ('127.0.0.1', 56868)
+DEBUG:root:[Waiting] Handling new Connection started.
+INFO:root:New connection from ('127.0.0.1', 56884)
+DEBUG:root:Connection message received: #Connect
+DEBUG:root:Sending confirm message.
+DEBUG:root:Starting communication with ('127.0.0.1', 56884)
