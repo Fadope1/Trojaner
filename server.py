@@ -16,6 +16,7 @@ TCP_SERVER.bind((IP, PORT)) # 127.0.0.1:4545
 TCP_SERVER.listen() # set to listen mode
 TCP_SERVER.setblocking(0)
 
+
 SERVER_COMMANDS: dict[str, Callable] = {
     "@help": lambda: print(f">> List of commands: \n{' '.join(list(SERVER_COMMANDS))}")
 }
