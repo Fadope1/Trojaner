@@ -10,7 +10,7 @@ logging.basicConfig(filename='clientLogFile.log', filemode='w', encoding='utf-8'
 
 
 @run_forever
-def pairing_process() -> None:
+def pairing_process(client) -> None:
     """This handles the pairing with the server including timeouts."""
 
     logging.debug("Sending connect message.")
@@ -24,7 +24,7 @@ def pairing_process() -> None:
 
 
 @run_forever
-def server_connection() -> None:
+def server_connection(client) -> None:
     """This handles the connection with the server and running the code."""
 
     logging.debug("[Waiting] Receiving server msg.")
@@ -50,9 +50,9 @@ def main():
         client.setblocking(0) # not blocking functions for timeouts
 
         logging.info("Starting pairing process")
-        pairing_process()
+        pairing_process(client=client)
         logging.info("Connection has been established")
-        server_connection()
+        server_connection(client=client)
     except ConnectionTimeout:
         import time
         logging.error("Connection has timed out")
@@ -65,6 +65,8 @@ def main():
         time.sleep(1)
     except Exception as e:
         logging.error("Undefined error occured:", e)
+    # finally:
+    #     client.shutdown(0)
 
 
 if __name__ == "__main__":
